@@ -1,63 +1,156 @@
 module "labels" {
-  source  = "git::https://github.com/cloudposse/terraform-null-label.git?ref=0.24.1"
-  context = var.context
-  name    = var.name
+  source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref=0.24.1"
+  context     = var.context
+  name        = var.name
+  label_order = var.label_order
 }
 
-resource "aws_iam_role" "iam_for_lambda" {
-  name = "iam_for_lambda"
-
-    assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "lambda.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-  EOF
+data "archive_file" "get_all_authors" {
+  type        = "zip"
+  source_file = "${path.module}/lambda-functions/get-all-authors/get-all-authors.js"
+  output_path = "modules/lambda/eu-central-1/lambda-functions/get-all-authors/get-all-authors.zip"
 }
 
-resource "aws_iam_role_policy" "test_policy" {
-  name = "iam_for_lambda"
-  role = aws_iam_role.iam_for_lambda.id
-
-  # Terraform's "jsonencode" function converts a
-  # Terraform expression result to valid JSON syntax.
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = [
-          "dynamodb:DeleteItem",
-          "dynamodb:GetItem",
-          "dynamodb:PutItem",
-          "dynamodb:Scan",
-          "dynamodb:UpdateItem"
-        ]
-        Effect   = "Allow"
-        Resource = "*"
-      },
-    ]
-  })
-}
-
-# resource "aws_lambda_function" "test_lambda" {
-#   filename      = "lambda_function_payload.zip"
-#   function_name = module.labels.id
-#   role          = aws_iam_role.iam_for_lambda.arn
-#   handler       = "index.handler"
+resource "aws_lambda_function" "get_all_authors" {
+  filename      = "modules/lambda/eu-central-1/lambda-functions/get-all-authors/get-all-authors.zip"
+  function_name = "${module.labels.id}-get-all-authors"
+  role          = var.role_get_all_authors_arn
+  handler       = "get-all-authors.handler"
 
 #   # The filebase64sha256() function is available in Terraform 0.11.12 and later
 #   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
 #   # source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
-# #   source_code_hash = filebase64sha256("lambda_function_payload.zip")
+  source_code_hash = filebase64sha256("modules/lambda/eu-central-1/lambda-functions/get-all-authors/get-all-authors.zip")
 
-#   runtime = "nodejs14.x"
-# }
+   runtime = "nodejs14.x"
+   environment {
+     variables = {
+       "TABLE_NAME" = var.dynamo_db_authors_name
+     }
+   }
+}
+
+data "archive_file" "get_all_courses" {
+  type        = "zip"
+  source_file = "${path.module}/lambda-functions/get-all-courses/get-all-courses.js"
+  output_path = "modules/lambda/eu-central-1/lambda-functions/get-all-courses/get-all-courses.zip"
+}
+
+resource "aws_lambda_function" "get_all_courses" {
+  filename      = "modules/lambda/eu-central-1/lambda-functions/get-all-courses/get-all-courses.zip"
+  function_name = "${module.labels.id}-get-all-courses"
+  role          = var.role_get_all_courses_arn
+  handler       = "get-all-courses.handler"
+
+#   # The filebase64sha256() function is available in Terraform 0.11.12 and later
+#   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
+#   # source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
+  source_code_hash = filebase64sha256("modules/lambda/eu-central-1/lambda-functions/get-all-courses/get-all-courses.zip")
+
+   runtime = "nodejs14.x"
+   environment {
+     variables = {
+       "TABLE_NAME" = var.dynamo_db_courses_name
+     }
+   }
+}
+
+data "archive_file" "get_course" {
+  type        = "zip"
+  source_file = "${path.module}/lambda-functions/get-course/get-course.js"
+  output_path = "modules/lambda/eu-central-1/lambda-functions/get-course/get-course.zip"
+}
+
+resource "aws_lambda_function" "get_course" {
+  filename      = "modules/lambda/eu-central-1/lambda-functions/get-course/get-course.zip"
+  function_name = "${module.labels.id}-get-course"
+  role          = var.role_get_course_arn
+  handler       = "get-course.handler"
+
+#   # The filebase64sha256() function is available in Terraform 0.11.12 and later
+#   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
+#   # source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
+  source_code_hash = filebase64sha256("modules/lambda/eu-central-1/lambda-functions/get-course/get-course.zip")
+
+   runtime = "nodejs14.x"
+   environment {
+     variables = {
+       "TABLE_NAME" = var.dynamo_db_courses_name
+     }
+   }
+}
+
+data "archive_file" "save_course" {
+  type        = "zip"
+  source_file = "${path.module}/lambda-functions/save-course/save-course.js"
+  output_path = "modules/lambda/eu-central-1/lambda-functions/save-course/save-course.zip"
+}
+
+resource "aws_lambda_function" "save_course" {
+  filename      = "modules/lambda/eu-central-1/lambda-functions/save-course/save-course.zip"
+  function_name = "${module.labels.id}-save-course"
+  role          = var.role_save_course_arn
+  handler       = "save-course.handler"
+
+#   # The filebase64sha256() function is available in Terraform 0.11.12 and later
+#   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
+#   # source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
+  source_code_hash = filebase64sha256("modules/lambda/eu-central-1/lambda-functions/save-course/save-course.zip")
+
+   runtime = "nodejs14.x"
+   environment {
+     variables = {
+       "TABLE_NAME" = var.dynamo_db_courses_name
+     }
+   }
+}
+
+data "archive_file" "update_course" {
+  type        = "zip"
+  source_file = "${path.module}/lambda-functions/update-course/update-course.js"
+  output_path = "modules/lambda/eu-central-1/lambda-functions/update-course/update-course.zip"
+}
+
+resource "aws_lambda_function" "update_course" {
+  filename      = "modules/lambda/eu-central-1/lambda-functions/update-course/update-course.zip"
+  function_name = "${module.labels.id}-update-course"
+  role          = var.role_update_course_arn
+  handler       = "update-course.handler"
+
+#   # The filebase64sha256() function is available in Terraform 0.11.12 and later
+#   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
+#   # source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
+  source_code_hash = filebase64sha256("modules/lambda/eu-central-1/lambda-functions/update-course/update-course.zip")
+
+   runtime = "nodejs14.x"
+   environment {
+     variables = {
+       "TABLE_NAME" = var.dynamo_db_courses_name
+     }
+   }
+}
+
+data "archive_file" "delete_course" {
+  type        = "zip"
+  source_file = "${path.module}/lambda-functions/delete-course/delete-course.js"
+  output_path = "modules/lambda/eu-central-1/lambda-functions/delete-course/delete-course.zip"
+}
+
+resource "aws_lambda_function" "delete_course" {
+  filename      = "modules/lambda/eu-central-1/lambda-functions/delete-course/delete-course.zip"
+  function_name = "${module.labels.id}-delete-course"
+  role          = var.role_delete_course_arn
+  handler       = "delete-course.handler"
+
+#   # The filebase64sha256() function is available in Terraform 0.11.12 and later
+#   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
+#   # source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
+  source_code_hash = filebase64sha256("modules/lambda/eu-central-1/lambda-functions/delete-course/delete-course.zip")
+
+   runtime = "nodejs14.x"
+   environment {
+     variables = {
+       "TABLE_NAME" = var.dynamo_db_courses_name
+     }
+   }
+}
