@@ -12,7 +12,7 @@ data "archive_file" "get_all_authors" {
 }
 
 resource "aws_lambda_function" "get_all_authors" {
-  filename      = "modules/lambda/eu-central-1/lambda-functions/get-all-authors/get-all-authors.zip"
+  filename      = data.archive_file.get_all_authors.output_path
   function_name = "${module.labels.id}-get-all-authors"
   role          = var.role_get_all_authors_arn
   handler       = "get-all-authors.handler"
@@ -20,7 +20,7 @@ resource "aws_lambda_function" "get_all_authors" {
 #   # The filebase64sha256() function is available in Terraform 0.11.12 and later
 #   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
 #   # source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
-  source_code_hash = filebase64sha256("modules/lambda/eu-central-1/lambda-functions/get-all-authors/get-all-authors.zip")
+  source_code_hash = data.archive_file.get_all_authors.output_base64sha256
 
    runtime = "nodejs14.x"
    environment {
@@ -37,7 +37,7 @@ data "archive_file" "get_all_courses" {
 }
 
 resource "aws_lambda_function" "get_all_courses" {
-  filename      = "modules/lambda/eu-central-1/lambda-functions/get-all-courses/get-all-courses.zip"
+  filename      = data.archive_file.get_all_courses.output_path
   function_name = "${module.labels.id}-get-all-courses"
   role          = var.role_get_all_courses_arn
   handler       = "get-all-courses.handler"
@@ -45,7 +45,7 @@ resource "aws_lambda_function" "get_all_courses" {
 #   # The filebase64sha256() function is available in Terraform 0.11.12 and later
 #   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
 #   # source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
-  source_code_hash = filebase64sha256("modules/lambda/eu-central-1/lambda-functions/get-all-courses/get-all-courses.zip")
+  source_code_hash = data.archive_file.get_all_courses.output_base64sha256
 
    runtime = "nodejs14.x"
    environment {
@@ -62,7 +62,7 @@ data "archive_file" "get_course" {
 }
 
 resource "aws_lambda_function" "get_course" {
-  filename      = "modules/lambda/eu-central-1/lambda-functions/get-course/get-course.zip"
+  filename      = data.archive_file.get_course.output_path
   function_name = "${module.labels.id}-get-course"
   role          = var.role_get_course_arn
   handler       = "get-course.handler"
@@ -70,7 +70,7 @@ resource "aws_lambda_function" "get_course" {
 #   # The filebase64sha256() function is available in Terraform 0.11.12 and later
 #   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
 #   # source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
-  source_code_hash = filebase64sha256("modules/lambda/eu-central-1/lambda-functions/get-course/get-course.zip")
+  source_code_hash = data.archive_file.get_course.output_base64sha256
 
    runtime = "nodejs14.x"
    environment {
@@ -87,7 +87,7 @@ data "archive_file" "save_course" {
 }
 
 resource "aws_lambda_function" "save_course" {
-  filename      = "modules/lambda/eu-central-1/lambda-functions/save-course/save-course.zip"
+  filename      = data.archive_file.save_course.output_path
   function_name = "${module.labels.id}-save-course"
   role          = var.role_save_course_arn
   handler       = "save-course.handler"
@@ -95,7 +95,7 @@ resource "aws_lambda_function" "save_course" {
 #   # The filebase64sha256() function is available in Terraform 0.11.12 and later
 #   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
 #   # source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
-  source_code_hash = filebase64sha256("modules/lambda/eu-central-1/lambda-functions/save-course/save-course.zip")
+  source_code_hash = data.archive_file.save_course.output_base64sha256
 
    runtime = "nodejs14.x"
    environment {
@@ -112,7 +112,7 @@ data "archive_file" "update_course" {
 }
 
 resource "aws_lambda_function" "update_course" {
-  filename      = "modules/lambda/eu-central-1/lambda-functions/update-course/update-course.zip"
+  filename      = data.archive_file.update_course.output_path
   function_name = "${module.labels.id}-update-course"
   role          = var.role_update_course_arn
   handler       = "update-course.handler"
@@ -120,7 +120,7 @@ resource "aws_lambda_function" "update_course" {
 #   # The filebase64sha256() function is available in Terraform 0.11.12 and later
 #   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
 #   # source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
-  source_code_hash = filebase64sha256("modules/lambda/eu-central-1/lambda-functions/update-course/update-course.zip")
+  source_code_hash = data.archive_file.update_course.output_base64sha256
 
    runtime = "nodejs14.x"
    environment {
@@ -137,7 +137,7 @@ data "archive_file" "delete_course" {
 }
 
 resource "aws_lambda_function" "delete_course" {
-  filename      = "modules/lambda/eu-central-1/lambda-functions/delete-course/delete-course.zip"
+  filename      = data.archive_file.delete_course.output_path
   function_name = "${module.labels.id}-delete-course"
   role          = var.role_delete_course_arn
   handler       = "delete-course.handler"
@@ -145,7 +145,7 @@ resource "aws_lambda_function" "delete_course" {
 #   # The filebase64sha256() function is available in Terraform 0.11.12 and later
 #   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
 #   # source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
-  source_code_hash = filebase64sha256("modules/lambda/eu-central-1/lambda-functions/delete-course/delete-course.zip")
+  source_code_hash = data.archive_file.delete_course.output_base64sha256
 
    runtime = "nodejs14.x"
    environment {
