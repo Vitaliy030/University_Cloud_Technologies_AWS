@@ -89,7 +89,7 @@ data "archive_file" "save_course" {
 resource "aws_lambda_function" "save_course" {
   filename      = data.archive_file.save_course.output_path
   function_name = "${module.labels.id}-save-course"
-  role          = var.role_save_course_arn
+  role          = var.role_save_update_course_arn
   handler       = "save-course.handler"
 
 #   # The filebase64sha256() function is available in Terraform 0.11.12 and later
@@ -114,7 +114,7 @@ data "archive_file" "update_course" {
 resource "aws_lambda_function" "update_course" {
   filename      = data.archive_file.update_course.output_path
   function_name = "${module.labels.id}-update-course"
-  role          = var.role_update_course_arn
+  role          = var.role_save_update_course_arn
   handler       = "update-course.handler"
 
 #   # The filebase64sha256() function is available in Terraform 0.11.12 and later

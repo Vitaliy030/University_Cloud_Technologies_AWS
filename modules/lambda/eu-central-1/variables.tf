@@ -13,13 +13,8 @@ variable "role_get_course_arn" {
   type        = string
 }
 
-variable "role_save_course_arn" {
-  description = "role_save_course_arn"
-  type        = string
-}
-
-variable "role_update_course_arn" {
-  description = "role_update_course_arn"
+variable "role_save_update_course_arn" {
+  description = "role_save_update_course_arn"
   type        = string
 }
 

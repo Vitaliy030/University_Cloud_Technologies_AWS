@@ -149,8 +149,8 @@ resource "aws_iam_role_policy" "get_course_policy" {
 }
 #[var.dynamo_db_authors_arn, var.dynamo_db_courses_arn]
 
-resource "aws_iam_role" "iam_for_save_course" {
-  name = "${module.labels.id}_for_save_course"
+resource "aws_iam_role" "iam_for_save_update_course" {
+  name = "${module.labels.id}_for_save_update_course"
 
     assume_role_policy = <<EOF
 {
@@ -169,57 +169,9 @@ resource "aws_iam_role" "iam_for_save_course" {
   EOF
 }
 
-resource "aws_iam_role_policy" "save_course_policy" {
+resource "aws_iam_role_policy" "save_update_course_policy" {
   name = module.labels.id
-  role = aws_iam_role.iam_for_save_course.id
-
-  # Terraform's "jsonencode" function converts a
-  # Terraform expression result to valid JSON syntax.
-  policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-            ],
-            "Resource": "arn:aws:logs:*:*:*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": "dynamodb:PutItem",
-            "Resource": [var.dynamo_db_courses_arn]
-        }
-    ]
-  })
-}
-#[var.dynamo_db_authors_arn, var.dynamo_db_courses_arn]
-
-resource "aws_iam_role" "iam_for_update_course" {
-  name = "${module.labels.id}_for_update_course"
-
-    assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "lambda.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-  EOF
-}
-
-resource "aws_iam_role_policy" "update_course_policy" {
-  name = module.labels.id
-  role = aws_iam_role.iam_for_update_course.id
+  role = aws_iam_role.iam_for_save_update_course.id
 
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.

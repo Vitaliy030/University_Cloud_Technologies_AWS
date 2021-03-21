@@ -10,12 +10,8 @@ output "role_get_course_arn" {
   value = aws_iam_role.iam_for_get_course.arn
 }
 
-output "role_save_course_arn" {
-  value = aws_iam_role.iam_for_save_course.arn
-}
-
-output "role_update_course_arn" {
-  value = aws_iam_role.iam_for_update_course.arn
+output "role_save_update_course_arn" {
+  value = aws_iam_role.iam_for_save_update_course.arn
 }
 
 output "role_delete_course_arn" {

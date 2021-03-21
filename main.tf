@@ -27,8 +27,7 @@ module "lambda" {
   role_get_all_authors_arn = module.iam.role_get_all_authors_arn
   role_get_all_courses_arn = module.iam.role_get_all_courses_arn
   role_get_course_arn = module.iam.role_get_course_arn
-  role_save_course_arn = module.iam.role_save_course_arn
-  role_update_course_arn = module.iam.role_update_course_arn
+  role_save_update_course_arn = module.iam.role_save_update_course_arn
   role_delete_course_arn = module.iam.role_delete_course_arn
 
   dynamo_db_authors_name = module.dynamo_db_authors.dynamp_db_name
