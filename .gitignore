@@ -1,3 +1,4 @@
 .terraform-dev
 .terraform
 provider.tf
+*.tfvars

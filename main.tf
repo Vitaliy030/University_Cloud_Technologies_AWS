@@ -42,35 +42,41 @@ module "iam" {
   dynamo_db_courses_arn = module.dynamo_db_courses.dynamp_db_arn
 }
 
+module "notified_Lambda" {
+  source      = "./modules/notified_Lambda/eu-central-1"
+  context     = module.base_labels.context
+  name        = "notified_Lambda"
+}
 
 
 
 
+# Перенести в окремий модуль
+resource "aws_budgets_budget" "this" {
+  name              = module.base_labels.id
+  budget_type       = "COST"
+  limit_amount      = "1.0"
+  limit_unit        = "USD"
+  time_period_start = "2017-07-01_00:00"
+  time_unit         = "MONTHLY"
 
-
-
-
-
-
-
-resource "aws_dynamodb_table" "example" {
-  name             = module.base_labels.id
-  hash_key         = "id"
-
-  billing_mode     = "PAY_PER_REQUEST"
-  # stream_enabled   = true
-  # stream_view_type = "NEW_AND_OLD_IMAGES"
-
-  attribute {
-    name = "id"
-    type = "S"
+  notification {
+    comparison_operator        = "GREATER_THAN"
+    threshold                  = 100
+    threshold_type             = "PERCENTAGE"
+    notification_type          = "FORECASTED"
+    subscriber_email_addresses = var.subscriber_email_addresses
+    subscriber_sns_topic_arns  = [module.notify_slack.this_slack_topic_arn]
   }
+}
 
-  /* replica {
-    region_name = "us-east-2"
-  }
+module "notify_slack" {
+  source  = "terraform-aws-modules/notify-slack/aws"
+  version = "~> 4.0"
 
-  replica {
-    region_name = "us-west-2"
-  } */
+  sns_topic_name = module.base_labels.id
+
+  slack_webhook_url = var.slack_webhook_url
+  slack_channel     = "aws-notification"
+  slack_username    = "Vitalii Romanko"
 }
