@@ -48,35 +48,10 @@ module "notified_Lambda" {
   name        = "notified_Lambda"
 }
 
-
-
-
-# Перенести в окремий модуль
-resource "aws_budgets_budget" "this" {
-  name              = module.base_labels.id
-  budget_type       = "COST"
-  limit_amount      = "1.0"
-  limit_unit        = "USD"
-  time_period_start = "2017-07-01_00:00"
-  time_unit         = "MONTHLY"
-
-  notification {
-    comparison_operator        = "GREATER_THAN"
-    threshold                  = 100
-    threshold_type             = "PERCENTAGE"
-    notification_type          = "FORECASTED"
-    subscriber_email_addresses = var.subscriber_email_addresses
-    subscriber_sns_topic_arns  = [module.notify_slack.this_slack_topic_arn]
-  }
-}
-
-module "notify_slack" {
-  source  = "terraform-aws-modules/notify-slack/aws"
-  version = "~> 4.0"
-
-  sns_topic_name = module.base_labels.id
-
-  slack_webhook_url = var.slack_webhook_url
-  slack_channel     = "aws-notification"
-  slack_username    = "Vitalii Romanko"
+module "budget" {
+  source                     = "./modules/budget"
+  context                    = module.base_labels.context
+  name                       = "budget"
+  subscriber_email_addresses = var.subscriber_email_addresses
+  slack_webhook_url          = var.slack_webhook_url
 }

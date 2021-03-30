@@ -21,7 +21,7 @@ provider "registry.terraform.io/hashicorp/archive" {
 
 provider "registry.terraform.io/hashicorp/aws" {
   version     = "3.29.1"
-  constraints = "3.29.1"
+  constraints = ">= 2.35.0, >= 2.67.0, 3.29.1"
   hashes = [
     "h1:RGjj+AQ36r8UMMa5fRWrQ8ONeMe6z31UXVAYQhPTH2s=",
     "h1:vFaEB2VBkZnKUXuVbOLbq6a8mOYNx2ftmTRP0YVbzu8=",
