@@ -43,9 +43,10 @@ module "iam" {
 }
 
 module "notified_Lambda" {
-  source      = "./modules/notified_Lambda/eu-central-1"
-  context     = module.base_labels.context
-  name        = "notified_Lambda"
+  source       = "./modules/notified_Lambda/eu-central-1"
+  context      = module.base_labels.context
+  name         = "notified_Lambda"
+  alarm_emails = var.alarm_emails
 }
 
 module "budget" {

@@ -118,3 +118,29 @@ resource "aws_lambda_function" "lambda_function_notified" {
      }
    }
 }
+
+resource "aws_cloudwatch_log_metric_filter" "yada" {
+  name           = module.labels.id
+  pattern        = "?ERROR ?WARN ?5xx"
+  log_group_name = "/aws/lambda/${aws_lambda_function.error_generating_Lambda.function_name}"
+
+  metric_transformation {
+    name      = module.labels.id
+    namespace = module.labels.id
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "foobar" {
+  alarm_name                = module.labels.id
+  comparison_operator       = "GreaterThanOrEqualToThreshold"
+  evaluation_periods        = "2"
+  metric_name               = module.labels.id
+  namespace                 = module.labels.id
+  period                    = "300"
+  statistic                 = "Sum"
+  threshold                 = "1"
+  alarm_description         = "This metric monitors ${module.labels.id}"
+  treat_missing_data        = "notBreaching"
+  alarm_actions             = [aws_sns_topic.this.arn]
+}
