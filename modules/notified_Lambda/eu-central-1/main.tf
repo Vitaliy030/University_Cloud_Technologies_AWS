@@ -119,7 +119,7 @@ resource "aws_lambda_function" "lambda_function_notified" {
    }
 }
 
-resource "aws_cloudwatch_log_metric_filter" "yada" {
+resource "aws_cloudwatch_log_metric_filter" "this" {
   name           = module.labels.id
   pattern        = "?ERROR ?WARN ?5xx"
   log_group_name = "/aws/lambda/${aws_lambda_function.error_generating_Lambda.function_name}"
@@ -131,7 +131,7 @@ resource "aws_cloudwatch_log_metric_filter" "yada" {
   }
 }
 
-resource "aws_cloudwatch_metric_alarm" "foobar" {
+resource "aws_cloudwatch_metric_alarm" "this" {
   alarm_name                = module.labels.id
   comparison_operator       = "GreaterThanOrEqualToThreshold"
   evaluation_periods        = "2"
