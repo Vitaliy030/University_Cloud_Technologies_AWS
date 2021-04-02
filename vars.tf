@@ -24,5 +24,4 @@ variable "subscriber_email_addresses" {
 
 variable "slack_webhook_url" {
   type = string
-  default = "https://hooks.slack.com/services/AAA/BBB/CCC"
 }

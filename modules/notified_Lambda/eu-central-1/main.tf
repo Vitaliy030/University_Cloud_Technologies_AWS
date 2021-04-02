@@ -5,8 +5,20 @@ module "labels" {
   label_order = var.label_order
 }
 
+module "notify_slack_module" {
+  source  = "terraform-aws-modules/notify-slack/aws"
+  version = "~> 4.0"
+
+  sns_topic_name       = "terraform_notify_sns_slack"
+  lambda_function_name = "notify_slack_module"
+
+  slack_webhook_url = var.slack_webhook_url
+  slack_channel     = "aws-notification"
+  slack_username    = "VitaliiRomanko"
+}
+
 resource "aws_sns_topic" "this" {
-  name = "${module.labels.id}_error_sns_topic"
+  name = "${module.labels.id}_error_sns_topic_slack"
 }
 
 data "aws_region" "current" {}
@@ -142,5 +154,5 @@ resource "aws_cloudwatch_metric_alarm" "this" {
   threshold                 = "1"
   alarm_description         = "This metric monitors ${module.labels.id}"
   treat_missing_data        = "notBreaching"
-  alarm_actions             = [aws_sns_topic.this.arn]
+  alarm_actions             = [aws_sns_topic.this.arn, module.notify_slack_module.this_slack_topic_arn]
 }
