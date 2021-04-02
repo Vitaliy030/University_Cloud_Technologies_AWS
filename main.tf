@@ -48,6 +48,7 @@ module "notified_Lambda" {
   name              = "notified_Lambda"
   alarm_emails      = var.alarm_emails
   slack_webhook_url = var.slack_webhook_url
+  author_name       = var.author_name
 }
 
 module "budget" {
@@ -56,4 +57,5 @@ module "budget" {
   name                       = "budget"
   subscriber_email_addresses = var.subscriber_email_addresses
   slack_webhook_url          = var.slack_webhook_url
+  author_name                = var.author_name
 }

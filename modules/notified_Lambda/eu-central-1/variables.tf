@@ -5,3 +5,7 @@ variable "alarm_emails" {
 variable "slack_webhook_url" {
   type = string
 }
+
+variable "author_name" {
+  type = string
+}

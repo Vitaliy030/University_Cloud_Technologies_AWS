@@ -25,3 +25,7 @@ variable "subscriber_email_addresses" {
 variable "slack_webhook_url" {
   type = string
 }
+
+variable "author_name" {
+  type = string
+}

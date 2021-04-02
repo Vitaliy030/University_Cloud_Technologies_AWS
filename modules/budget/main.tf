@@ -31,5 +31,5 @@ module "notify_slack" {
 
   slack_webhook_url = var.slack_webhook_url
   slack_channel     = "aws-notification"
-  slack_username    = "Vitalii Romanko"
+  slack_username    = var.author_name
 }
