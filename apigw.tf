@@ -8,39 +8,48 @@ module "api-gateway" {
   label_order = ["name", "environment"]
   enabled     = true
   # Api Gateway Resource
-  path_parts = ["mytestresource", "mytestresource1"]
+  path_parts = ["authors", "course"]
   # Api Gateway Method
   method_enabled = true
   http_methods   = ["GET", "GET"]
   # Api Gateway Integration
-  integration_types        = ["MOCK", "AWS"]
+  integration_types        = ["AWS", "AWS"]
   integration_http_methods = ["POST", "POST"]
-  uri                      = ["", "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-central-1:657694663228:function:test/invocations"]
+  #uri                      = [module.lambda.get_all_authors_invoke_arn, module.lambda.get_all_courses_invoke_arn]
+  uri                      = [module.lambda.get_all_authors_invoke_arn, module.lambda.get_all_authors_invoke_arn]
   integration_request_parameters = [{
     "integration.request.header.X-Authorization" = "'static'"
-  }, {}]
+  }, {
+    "integration.request.header.X-Authorization" = "'static'"
+  }]
   request_templates = [{
     "application/xml" = <<EOF
   {
      "body" : $input.json('$')
   }
   EOF
-  }, {}]
+  }, {
+    "application/xml" = <<EOF
+  {
+     "body" : $input.json('$')
+  }
+  EOF
+  }]
   # Api Gateway Method Response
   status_codes        = [200, 200]
-  response_models     = [{ "application/json" = "Empty" }, {}]
-  response_parameters = [{ "method.response.header.X-Some-Header" = true }, {}]
+  response_models     = [{ "application/json" = "Empty" }, { "application/json" = "Empty" }]
+  response_parameters = [{ "method.response.header.X-Some-Header" = true }, { "method.response.header.X-Some-Header" = true }]
   # Api Gateway Integration Response
-  integration_response_parameters = [{ "method.response.header.X-Some-Header" = "integration.response.header.X-Some-Other-Header" }, {}]
-  response_templates = [{
-    "application/xml" = <<EOF
-  #set($inputRoot = $input.path('$'))
-  <?xml version="1.0" encoding="UTF-8"?>
-  <message>
-      $inputRoot.body
-  </message>
-  EOF
-  }, {}]
+  integration_response_parameters = [{ "method.response.header.X-Some-Header" = "integration.response.header.X-Some-Other-Header" }, { "method.response.header.X-Some-Header" = "integration.response.header.X-Some-Other-Header" }]
+  # response_templates = [{
+  #   "application/xml" = <<EOF
+  # #set($inputRoot = $input.path('$'))
+  # <?xml version="1.0" encoding="UTF-8"?>
+  # <message>
+  #     $inputRoot.body
+  # </message>
+  # EOF
+  # }, {}]
   # Api Gateway Deployment
   deployment_enabled = true
   stage_name         = "deploy"
@@ -60,7 +69,7 @@ module "api-gateway" {
   authorizer_types                = ["TOKEN", "REQUEST"]*/
   # Api Gateway Gateway Response
   gateway_response_count = 2
-  response_types         = ["UNAUTHORIZED", "RESOURCE_NOT_FOUND"]
+  response_types         = ["UNAUTHORIZED", "UNAUTHORIZED"]
   gateway_status_codes   = ["401", "404"]
   # Api Gateway Model
   model_count   = 2
@@ -69,4 +78,6 @@ module "api-gateway" {
   # Api Gateway Api Key
   key_count = 2
   key_names = ["test", "test1"]
+
+  content_handlings = ["CONVERT_TO_TEXT", "CONVERT_TO_TEXT"]
 }

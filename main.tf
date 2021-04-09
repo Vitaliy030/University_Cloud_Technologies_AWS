@@ -3,9 +3,6 @@ module "frontend" {
   context     = module.base_labels.context
   name        = "frontend"
   label_order = var.label_order
-#   marketplace_cloudfront_min_ttl = var.marketplace_cloudfront_min_ttl
-#   marketplace_cloudfront_default_ttl = var.marketplace_cloudfront_default_ttl
-#   marketplace_cloudfront_max_ttl = var.marketplace_cloudfront_max_ttl
 }
 
 module "dynamo_db_courses" {
