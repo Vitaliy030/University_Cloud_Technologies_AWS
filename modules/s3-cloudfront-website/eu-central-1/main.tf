@@ -26,6 +26,13 @@ resource "aws_s3_bucket_policy" "this" {
   policy = data.aws_iam_policy_document.this.json
 }
 
+resource "aws_s3_bucket_object" "file_upload" {
+  bucket = aws_s3_bucket.this.id
+  key    = "My_website"
+  source = "${path.module}/My_website/index.html"
+  etag   = filemd5("${path.module}/My_website/index.html")
+}
+
 data "aws_iam_policy_document" "this" {
   statement {
     actions = [
