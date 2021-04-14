@@ -26,11 +26,15 @@ resource "aws_s3_bucket_policy" "this" {
   policy = data.aws_iam_policy_document.this.json
 }
 
+locals {
+  website_file_path = "${path.module}/My_website/index.html"
+}
+
 resource "aws_s3_bucket_object" "file_upload" {
   bucket = aws_s3_bucket.this.id
   key    = "My_website"
-  source = "${path.module}/My_website/index.html"
-  etag   = filemd5("${path.module}/My_website/index.html")
+  source = local.website_file_path
+  etag   = filemd5(local.website_file_path)
 }
 
 data "aws_iam_policy_document" "this" {
