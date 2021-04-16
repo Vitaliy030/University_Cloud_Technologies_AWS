@@ -154,3 +154,72 @@ resource "aws_lambda_function" "delete_course" {
      }
    }
 }
+
+
+
+
+resource "aws_lambda_permission" "get_all_authors_permission" {
+  statement_id  = module.labels.id
+  action        = "lambda:InvokeFunction"
+  function_name = "${module.labels.id}-get-all-authors"
+  principal     = "apigateway.amazonaws.com"
+
+  # The /*/*/* part allows invocation from any stage, method and resource path
+  # within API Gateway REST API.
+  source_arn = "${var.api_gateway_execution_arn}/*/*/*"
+}
+
+resource "aws_lambda_permission" "get_all_courses_permission" {
+  statement_id  = module.labels.id
+  action        = "lambda:InvokeFunction"
+  function_name = "${module.labels.id}-get-all-courses"
+  principal     = "apigateway.amazonaws.com"
+
+  # The /*/*/* part allows invocation from any stage, method and resource path
+  # within API Gateway REST API.
+  source_arn = "${var.api_gateway_execution_arn}/*/*/*"
+}
+
+resource "aws_lambda_permission" "get_course_permission" {
+  statement_id  = module.labels.id
+  action        = "lambda:InvokeFunction"
+  function_name = "${module.labels.id}-get-course"
+  principal     = "apigateway.amazonaws.com"
+
+  # The /*/*/* part allows invocation from any stage, method and resource path
+  # within API Gateway REST API.
+  source_arn = "${var.api_gateway_execution_arn}/*/*/*"
+}
+
+resource "aws_lambda_permission" "save_course_permission" {
+  statement_id  = module.labels.id
+  action        = "lambda:InvokeFunction"
+  function_name = "${module.labels.id}-save-course"
+  principal     = "apigateway.amazonaws.com"
+
+  # The /*/*/* part allows invocation from any stage, method and resource path
+  # within API Gateway REST API.
+  source_arn = "${var.api_gateway_execution_arn}/*/*/*"
+}
+
+resource "aws_lambda_permission" "update_course_permission" {
+  statement_id  = module.labels.id
+  action        = "lambda:InvokeFunction"
+  function_name = "${module.labels.id}-update-course"
+  principal     = "apigateway.amazonaws.com"
+
+  # The /*/*/* part allows invocation from any stage, method and resource path
+  # within API Gateway REST API.
+  source_arn = "${var.api_gateway_execution_arn}/*/*/*"
+}
+
+resource "aws_lambda_permission" "delete_course_permission" {
+  statement_id  = module.labels.id
+  action        = "lambda:InvokeFunction"
+  function_name = "${module.labels.id}-delete-course"
+  principal     = "apigateway.amazonaws.com"
+
+  # The /*/*/* part allows invocation from any stage, method and resource path
+  # within API Gateway REST API.
+  source_arn = "${var.api_gateway_execution_arn}/*/*/*"
+}

@@ -8,15 +8,14 @@ module "api-gateway" {
   label_order = ["name", "environment"]
   enabled     = true
   # Api Gateway Resource
-  path_parts = ["authors", "course"]
+  path_parts = ["authors", "courses"]
   # Api Gateway Method
   method_enabled = true
   http_methods   = ["GET", "GET"]
   # Api Gateway Integration
   integration_types        = ["AWS", "AWS"]
   integration_http_methods = ["POST", "POST"]
-  #uri                      = [module.lambda.get_all_authors_invoke_arn, module.lambda.get_all_courses_invoke_arn]
-  uri                      = [module.lambda.get_all_authors_invoke_arn, module.lambda.get_all_authors_invoke_arn]
+  uri                      = [module.lambda.get_all_authors_invoke_arn, module.lambda.get_all_courses_invoke_arn]
   integration_request_parameters = [{
     "integration.request.header.X-Authorization" = "'static'"
   }, {
@@ -38,9 +37,29 @@ module "api-gateway" {
   # Api Gateway Method Response
   status_codes        = [200, 200]
   response_models     = [{ "application/json" = "Empty" }, { "application/json" = "Empty" }]
-  response_parameters = [{ "method.response.header.X-Some-Header" = true }, { "method.response.header.X-Some-Header" = true }]
+  response_parameters = [
+    {
+      "method.response.header.Access-Control-Allow-Headers" = true,
+      "method.response.header.Access-Control-Allow-Methods" = true,
+      "method.response.header.Access-Control-Allow-Origin" = true
+    },
+    {
+      "method.response.header.Access-Control-Allow-Headers" = true,
+      "method.response.header.Access-Control-Allow-Methods" = true,
+      "method.response.header.Access-Control-Allow-Origin" = true
+    }]
   # Api Gateway Integration Response
-  integration_response_parameters = [{ "method.response.header.X-Some-Header" = "integration.response.header.X-Some-Other-Header" }, { "method.response.header.X-Some-Header" = "integration.response.header.X-Some-Other-Header" }]
+  integration_response_parameters = [
+    {
+      "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+      "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS,POST,PUT'",
+      "method.response.header.Access-Control-Allow-Origin" = "'*'"
+    },
+    {
+      "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+      "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS,POST,PUT'",
+      "method.response.header.Access-Control-Allow-Origin" = "'*'"
+    }]
   # response_templates = [{
   #   "application/xml" = <<EOF
   # #set($inputRoot = $input.path('$'))
