@@ -58,3 +58,33 @@ module "budget" {
   slack_webhook_url          = var.slack_webhook_url
   author_name                = var.author_name
 }
+
+
+resource "aws_dynamodb_table_item" "author" {
+  table_name = module.dynamo_db_authors.dynamp_db_name
+  hash_key   = module.dynamo_db_authors.dynamp_db_hash_key
+
+  item = <<ITEM
+  {
+    "id": {"S": "cory-house"},
+    "firstName": {"S": "Cory"},
+    "lastName": {"S": "House"}
+  }
+ITEM
+}
+
+resource "aws_dynamodb_table_item" "course" {
+  table_name = module.dynamo_db_courses.dynamp_db_name
+  hash_key   = module.dynamo_db_courses.dynamp_db_hash_key
+
+  item = <<ITEM
+{
+  "id": {"S": "web-components-shadow-dom"},
+  "title": {"S": "Web Component Fundamentals"},
+  "watchHref": {"S": "http://www.pluralsight.com/courses/web-components-shadow-dom"},
+  "authorId": {"S": "cory-house"},
+  "length": {"S": "5:10"},
+  "category": {"S": "HTML5"}
+}
+ITEM
+}
