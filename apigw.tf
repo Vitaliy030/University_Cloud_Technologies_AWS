@@ -61,14 +61,17 @@ module "api-gateway" {
       "method.response.header.Access-Control-Allow-Origin" = "'*'"
     }]
   # response_templates = [{
-  #   "application/xml" = <<EOF
-  # #set($inputRoot = $input.path('$'))
-  # <?xml version="1.0" encoding="UTF-8"?>
-  # <message>
-  #     $inputRoot.body
-  # </message>
-  # EOF
-  # }, {}]
+  #   "application/json" = "{\"message\":$context.error.messageString}"
+  # },
+  # {
+  #   "application/json" = "{\"message\":$context.error.messageString}"
+  # }]
+  gateway_response_templates = [{
+    "application/json" = "{\"message\":$context.error.messageString}"
+  },
+  {
+    "application/json" = "{\"message\":$context.error.messageString}"
+  }]
   # Api Gateway Deployment
   deployment_enabled = true
   stage_name         = "deploy"
@@ -89,7 +92,7 @@ module "api-gateway" {
   # Api Gateway Gateway Response
   gateway_response_count = 2
   response_types         = ["UNAUTHORIZED", "UNAUTHORIZED"]
-  gateway_status_codes   = ["401", "404"]
+  gateway_status_codes   = ["404", "404"]
   # Api Gateway Model
   model_count   = 2
   model_names   = ["test", "test1"]
