@@ -112,7 +112,7 @@ resource "aws_api_gateway_method_response" "get_authors" {
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers" = true,
     "method.response.header.Access-Control-Allow-Methods" = true,
-    "method.response.header.Access-Control-Allow-Origin" = true
+    "method.response.header.Access-Control-Allow-Origin" = false
   }
 }
 
@@ -151,9 +151,9 @@ resource "aws_api_gateway_method_response" "options_authors" {
   status_code   = "200"
   response_models = { "application/json" = "Empty" }
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin"      = true
-    "method.response.header.Access-Control-Allow-Headers"     = true
-    "method.response.header.Access-Control-Allow-Methods"     = true
+    "method.response.header.Access-Control-Allow-Origin"      = false
+    "method.response.header.Access-Control-Allow-Headers"     = false
+    "method.response.header.Access-Control-Allow-Methods"     = false
     "method.response.header.Access-Control-Allow-Credentials" = true
   }
   depends_on = [aws_api_gateway_method.options_authors]
@@ -174,7 +174,7 @@ resource "aws_api_gateway_integration_response" "options_authors" {
   status_code   = aws_api_gateway_method_response.options_authors.status_code
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-    "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS,POST,PUT'",
+    "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS'",
     "method.response.header.Access-Control-Allow-Origin" = "'*'"
   }
   depends_on = [aws_api_gateway_method_response.options_authors]
@@ -242,7 +242,7 @@ resource "aws_api_gateway_method_response" "get_courses" {
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers" = true,
     "method.response.header.Access-Control-Allow-Methods" = true,
-    "method.response.header.Access-Control-Allow-Origin" = true
+    "method.response.header.Access-Control-Allow-Origin" = false
   }
 }
 
@@ -350,7 +350,7 @@ resource "aws_api_gateway_integration" "post_course" {
   integration_http_method = "POST"
   type                    = "AWS"
   uri                     = module.lambda.save_course_invoke_arn
-  request_parameters      = {"integration.request.header.X-Authorization" = "'static'"}
+  #request_parameters      = {"integration.request.header.X-Authorization" = "'static'"}
   request_templates       = {
     "application/xml" = <<EOF
   {
@@ -370,7 +370,7 @@ resource "aws_api_gateway_method_response" "post_course" {
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers" = true,
     "method.response.header.Access-Control-Allow-Methods" = true,
-    "method.response.header.Access-Control-Allow-Origin" = true
+    "method.response.header.Access-Control-Allow-Origin" = false
   }
 }
 
@@ -434,4 +434,202 @@ resource "aws_api_gateway_integration_response" "options_course" {
     "method.response.header.Access-Control-Allow-Origin" = "'*'"
   }
   depends_on = [aws_api_gateway_method_response.options_course]
+}
+
+
+
+
+
+
+
+
+
+
+
+resource "aws_api_gateway_method" "put_course" {
+  authorization = "NONE"
+  http_method   = "PUT"
+  resource_id   = aws_api_gateway_resource.course.id
+  rest_api_id   = aws_api_gateway_rest_api.this.id
+}
+
+resource "aws_api_gateway_integration" "put_course" {
+  rest_api_id             = aws_api_gateway_rest_api.this.id
+  resource_id             = aws_api_gateway_resource.course.id
+  http_method             = aws_api_gateway_method.put_course.http_method
+  integration_http_method = "POST"
+  type                    = "AWS"
+  uri                     = module.lambda.update_course_invoke_arn
+  #request_parameters      = {"integration.request.header.X-Authorization" = "'static'"}
+#   request_templates       = {
+#     "application/json" = <<EOF
+# {
+#   "id": $input.params('id'),
+#   "title" : $input.json('$.title'),
+#   "authorId" : $input.json('$.authorId'),
+#   "length" : $input.json('$.length'),
+#   "category" : $input.json('$.category'),
+#   "watchHref" : $input.json('$.watchHref')
+# }
+#   EOF
+#   }
+  content_handling     = "CONVERT_TO_TEXT"
+  passthrough_behavior = "WHEN_NO_TEMPLATES"
+}
+
+resource "aws_api_gateway_method_response" "put_course" {
+  rest_api_id     = aws_api_gateway_rest_api.this.id
+  resource_id     = aws_api_gateway_resource.course.id
+  http_method     = aws_api_gateway_method.put_course.http_method
+  status_code     = "200"
+  response_models = { "application/json" = "Empty" }
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = true,
+    "method.response.header.Access-Control-Allow-Methods" = true,
+    "method.response.header.Access-Control-Allow-Origin" = false
+  }
+}
+
+resource "aws_api_gateway_integration_response" "put_course" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.course.id
+  http_method = aws_api_gateway_method.put_course.http_method
+  status_code = aws_api_gateway_method_response.put_course.status_code
+
+  # # Transforms the backend JSON response to XML
+  # response_templates = {
+  #   "application/xml" = <<EOF
+  # {
+  #    "body" : $input.json('$')
+  # }
+  # EOF
+  # }
+  response_parameters ={
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+    "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS,POST,PUT'",
+    "method.response.header.Access-Control-Allow-Origin" = "'*'"
+  }
+}
+
+
+
+
+resource "aws_api_gateway_method" "get_course" {
+  authorization = "NONE"
+  http_method   = "GET"
+  resource_id   = aws_api_gateway_resource.course.id
+  rest_api_id   = aws_api_gateway_rest_api.this.id
+}
+
+resource "aws_api_gateway_integration" "get_course" {
+  rest_api_id             = aws_api_gateway_rest_api.this.id
+  resource_id             = aws_api_gateway_resource.course.id
+  http_method             = aws_api_gateway_method.get_course.http_method
+  integration_http_method = "POST"
+  type                    = "AWS"
+  uri                     = module.lambda.get_course_invoke_arn
+  request_parameters      = {"integration.request.header.X-Authorization" = "'static'"}
+  request_templates       = {
+    "application/json" = <<EOF
+{
+  "id": "$input.params('id')"
+}
+  EOF
+  }
+  content_handling = "CONVERT_TO_TEXT"
+  passthrough_behavior = "WHEN_NO_TEMPLATES"
+}
+
+resource "aws_api_gateway_method_response" "get_course" {
+  rest_api_id     = aws_api_gateway_rest_api.this.id
+  resource_id     = aws_api_gateway_resource.course.id
+  http_method     = aws_api_gateway_method.get_course.http_method
+  status_code     = "200"
+  response_models = { "application/json" = "Empty" }
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = true,
+    "method.response.header.Access-Control-Allow-Methods" = true,
+    "method.response.header.Access-Control-Allow-Origin" = false
+  }
+}
+
+resource "aws_api_gateway_integration_response" "get_course" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.course.id
+  http_method = aws_api_gateway_method.get_course.http_method
+  status_code = aws_api_gateway_method_response.get_course.status_code
+
+  # # Transforms the backend JSON response to XML
+  # response_templates = {
+  #   "application/xml" = <<EOF
+  # {
+  #    "body" : $input.json('$')
+  # }
+  # EOF
+  # }
+  response_parameters ={
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+    "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS,POST,PUT'",
+    "method.response.header.Access-Control-Allow-Origin" = "'*'"
+  }
+}
+
+resource "aws_api_gateway_method" "delete_course" {
+  authorization = "NONE"
+  http_method   = "DELETE"
+  resource_id   = aws_api_gateway_resource.course.id
+  rest_api_id   = aws_api_gateway_rest_api.this.id
+}
+
+resource "aws_api_gateway_integration" "delete_course" {
+  rest_api_id             = aws_api_gateway_rest_api.this.id
+  resource_id             = aws_api_gateway_resource.course.id
+  http_method             = aws_api_gateway_method.delete_course.http_method
+  integration_http_method = "POST"
+  type                    = "AWS"
+  uri                     = module.lambda.delete_course_invoke_arn
+  request_parameters      = {"integration.request.header.X-Authorization" = "'static'"}
+  request_templates       = {
+    "application/json" = <<EOF
+{
+  "id": "$input.params('id')"
+}
+  EOF
+  }
+  content_handling = "CONVERT_TO_TEXT"
+  passthrough_behavior = "WHEN_NO_TEMPLATES"
+}
+
+resource "aws_api_gateway_method_response" "delete_course" {
+  rest_api_id     = aws_api_gateway_rest_api.this.id
+  resource_id     = aws_api_gateway_resource.course.id
+  http_method     = aws_api_gateway_method.delete_course.http_method
+  status_code     = "200"
+  response_models = { "application/json" = "Empty" }
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = true,
+    "method.response.header.Access-Control-Allow-Methods" = true,
+    "method.response.header.Access-Control-Allow-Origin" = false
+  }
+}
+
+resource "aws_api_gateway_integration_response" "delete_course" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.course.id
+  http_method = aws_api_gateway_method.delete_course.http_method
+  status_code = aws_api_gateway_method_response.delete_course.status_code
+
+  # # Transforms the backend JSON response to XML
+  # response_templates = {
+  #   "application/xml" = <<EOF
+  # {
+  #    "body" : $input.json('$')
+  # }
+  # EOF
+  # }
+  response_parameters ={
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+    "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS,POST,PUT'",
+    "method.response.header.Access-Control-Allow-Origin" = "'*'"
+  }
 }
